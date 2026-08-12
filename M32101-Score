@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ระบบประกาศคะแนนรายวิชา ค32101 - โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Prompt -->
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { 
+      font-family: 'Prompt', sans-serif; 
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col justify-between text-slate-800">
+
+  <!-- Header (ไม่มีขอบ โลโก้ใหญ่ชิดซ้าย ข้อความขวาใช้สีประจำโรงเรียน ชมพู-น้ำเงิน) -->
+  <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-md sm:max-w-xl mx-auto px-3 py-3.5 flex items-center gap-3.5 sm:gap-4">
+      <!-- โลโก้โรงเรียน (ใหญ่ขึ้น ชิดซ้าย) -->
+      <img src="https://lh3.googleusercontent.com/d/1Z9MPVWtb-mfSfJE0OVXg4lEQK9KQWxFm" 
+           alt="โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน" 
+           class="h-16 w-16 sm:h-20 sm:w-20 object-contain bg-white p-1.5 rounded-2xl shadow-md shrink-0">
+      
+      <!-- ข้อความด้านขวา -->
+      <div class="flex-1 min-w-0">
+        <!-- ชื่อระบบ -->
+        <h1 class="text-sm sm:text-base font-extrabold text-pink-400 leading-tight">
+          ระบบประกาศคะแนนรายวิชา ค32101
+        </h1>
+        <!-- ชื่อโรงเรียน -->
+        <p class="text-xs sm:text-sm font-bold text-white leading-snug mt-0.5">
+          โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน
+        </p>
+        <!-- ชื่อรายวิชา -->
+        <p class="text-[11px] sm:text-xs text-pink-200 font-medium mt-1 flex items-center gap-1">
+          <i class="fa-solid fa-book-open text-pink-400"></i> ค32101 คณิตศาสตร์พื้นฐาน 3ก
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner อาจารย์ผู้สอน -->
+  <div class="bg-indigo-900 text-slate-200 py-2 px-3 shadow-inner border-b border-indigo-800 text-center text-xs">
+    <div class="max-w-md mx-auto flex items-center justify-center gap-1.5 flex-wrap">
+      <i class="fa-solid fa-chalkboard-user text-pink-400"></i>
+      <span class="font-light"><strong>ผู้สอน:</strong> อ.สุกัลยา ฉายสุวรรณ & อ.นิสิตกนิษฐภาดา ชูประสิทธิ์</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-md sm:max-w-xl w-full mx-auto px-3 py-4 my-auto">
+    
+    <!-- Card สำหรับ Login / Register -->
+    <div id="authContainer" class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200">
+      
+      <!-- Tab Switcher -->
+      <div class="flex border-b border-slate-200 bg-indigo-950">
+        <button id="tabLoginBtn" onclick="switchTab('login')" class="w-1/2 py-3 font-semibold text-center text-white border-b-4 border-pink-500 bg-indigo-900/60 transition text-sm flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-right-to-bracket text-pink-400"></i> เข้าสู่ระบบ
+        </button>
+        <button id="tabRegisterBtn" onclick="switchTab('register')" class="w-1/2 py-3 font-semibold text-center text-slate-300 hover:text-white transition text-sm flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-user-plus text-slate-400"></i> สมัครใช้งาน
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6">
+        <!-- Form เข้าสู่ระบบ -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5">
+          <h2 class="text-base font-bold text-indigo-950 flex items-center gap-2 border-b pb-2">
+            <i class="fa-solid fa-lock text-pink-600"></i> เข้าสู่ระบบเพื่อดูคะแนน
+          </h2>
+          
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              <i class="fa-solid fa-door-open mr-1 text-indigo-900"></i> ห้องเรียน
+            </label>
+            <select id="loginRoom" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm text-slate-800 bg-white">
+              <option value="">-- เลือกห้องเรียน --</option>
+              <option value="152">ม.5/152</option>
+              <option value="154">ม.5/154</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i class="fa-solid fa-list-ol mr-1 text-indigo-900"></i> เลขที่
+              </label>
+              <input type="number" id="loginStudentNo" placeholder="เช่น 1" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i class="fa-solid fa-id-card mr-1 text-indigo-900"></i> เลขประจำตัว
+              </label>
+              <input type="number" id="loginStudentId" placeholder="เช่น 20551" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              <i class="fa-solid fa-key mr-1 text-indigo-900"></i> Password
+            </label>
+            <input type="password" id="loginPassword" placeholder="กรอกรหัสผ่าน" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+          </div>
+
+          <button type="submit" id="btnLogin" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-xl shadow transition duration-200 text-sm flex items-center justify-center gap-2 mt-2">
+            <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ
+          </button>
+        </form>
+
+        <!-- Form สมัครใช้งานครั้งแรก -->
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
+          <h2 class="text-base font-bold text-indigo-950 flex items-center gap-2 border-b pb-2">
+            <i class="fa-solid fa-user-pen text-emerald-600"></i> ลงทะเบียนสิทธิ์เข้าใช้งานครั้งแรก
+          </h2>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              <i class="fa-solid fa-door-open mr-1 text-indigo-900"></i> ห้องเรียน
+            </label>
+            <select id="regRoom" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm text-slate-800 bg-white">
+              <option value="">-- เลือกห้องเรียน --</option>
+              <option value="152">ม.5/152</option>
+              <option value="154">ม.5/154</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i class="fa-solid fa-list-ol mr-1 text-indigo-900"></i> เลขที่
+              </label>
+              <input type="number" id="regStudentNo" placeholder="เช่น 1" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i class="fa-solid fa-id-card mr-1 text-indigo-900"></i> เลขประจำตัว
+              </label>
+              <input type="number" id="regStudentId" placeholder="เช่น 20551" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              <i class="fa-solid fa-face-smile mr-1 text-indigo-900"></i> ชื่อเล่น
+            </label>
+            <input type="text" id="regNickname" placeholder="กรอกชื่อเล่นของคุณ" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              <i class="fa-solid fa-key mr-1 text-indigo-900"></i> ตั้ง Password (อย่างน้อย 6 ตัวอักษร)
+            </label>
+            <input type="password" id="regPassword" placeholder="อย่างน้อย 6 ตัวอักษร" minlength="6" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+          </div>
+
+          <button type="submit" id="btnRegister" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow transition duration-200 text-sm flex items-center justify-center gap-2 mt-2">
+            <i class="fa-solid fa-check"></i> ลงทะเบียน
+          </button>
+        </form>
+
+        <!-- Message Box -->
+        <div id="alertBox" class="mt-3 p-3 rounded-xl text-xs sm:text-sm hidden text-center font-medium"></div>
+      </div>
+    </div>
+
+    <!-- Score Dashboard Container -->
+    <div id="scoreContainer" class="hidden space-y-3.5">
+      
+      <!-- Profile Card (แสดงชื่อ-นามสกุลชัดเจน) -->
+      <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-5 border-t-4 border-pink-500 border-x border-b border-slate-200">
+        <div class="flex items-start justify-between border-b pb-3 mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-950 text-pink-400 flex items-center justify-center text-lg sm:text-xl font-bold shadow-sm shrink-0">
+              <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">ข้อมูลนักเรียน</span>
+              <h2 id="dispFullName" class="text-base sm:text-lg font-bold text-indigo-950 leading-tight"></h2>
+              <p class="text-xs text-slate-600 mt-0.5">ชื่อเล่น: <span id="dispNickname" class="font-bold text-pink-600"></span></p>
+            </div>
+          </div>
+          <button onclick="logout()" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold rounded-lg transition flex items-center gap-1 border border-slate-300 shrink-0">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> ออก
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 text-center text-xs bg-indigo-50/70 p-2.5 rounded-xl border border-indigo-100">
+          <div><span class="text-slate-500 block text-[10px]">ห้อง</span><span id="dispRoom" class="font-bold text-indigo-950 text-xs sm:text-sm"></span></div>
+          <div><span class="text-slate-500 block text-[10px]">เลขที่</span><span id="dispStudentNo" class="font-bold text-indigo-950 text-xs sm:text-sm"></span></div>
+          <div><span class="text-slate-500 block text-[10px]">เลขประจำตัว</span><span id="dispStudentId" class="font-bold text-indigo-950 text-xs sm:text-sm"></span></div>
+        </div>
+      </div>
+
+      <!-- Table คะแนน -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200">
+        <div class="px-4 py-3 bg-indigo-950 text-white font-bold text-sm flex justify-between items-center border-b-2 border-pink-500">
+          <span class="flex items-center gap-1.5">
+            <i class="fa-solid fa-clipboard-check text-pink-400"></i> ผลการเรียน ค32101
+          </span>
+          <span class="text-[10px] bg-pink-600 px-2 py-0.5 rounded-full text-white font-medium">เทอม 1/2569</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs sm:text-sm text-left text-slate-700">
+            <thead class="text-[11px] text-indigo-950 uppercase bg-slate-100 border-b">
+              <tr>
+                <th scope="col" class="px-3.5 py-3 whitespace-nowrap"><i class="fa-solid fa-list-check mr-1 text-pink-600"></i> รายการ</th>
+                <th scope="col" class="px-3 py-3 text-center w-24 bg-indigo-50/60 whitespace-nowrap"><i class="fa-solid fa-bullseye mr-1 text-indigo-900"></i> คะแนนเต็ม</th>
+                <th scope="col" class="px-4 py-3 text-center min-w-[130px] whitespace-nowrap"><i class="fa-solid fa-star mr-1 text-amber-500"></i> คะแนนที่ได้</th>
+              </tr>
+            </thead>
+            <tbody id="scoreTableBody" class="divide-y divide-slate-100">
+              <!-- ข้อมูลคะแนนจะถูกเติมที่นี่ด้วย JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="text-center text-[11px] text-slate-500 py-3 border-t border-slate-200 bg-white">
+    &copy; โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน
+  </footer>
+
+  <script>
+    // URL Web App จาก Google Apps Script
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkS-yyc8IxOv4wVoNNdlx841T7j3lQWCZkT26Co_o5SjkxG9zAn1W-Ox82h6FTdYgXmg/exec";
+
+    function switchTab(tab) {
+      hideAlert();
+      const loginBtn = document.getElementById('tabLoginBtn');
+      const regBtn = document.getElementById('tabRegisterBtn');
+
+      if (tab === 'login') {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        loginBtn.className = "w-1/2 py-3 font-semibold text-center text-white border-b-4 border-pink-500 bg-indigo-900/60 transition text-sm flex items-center justify-center gap-1.5";
+        regBtn.className = "w-1/2 py-3 font-semibold text-center text-slate-300 hover:text-white transition text-sm flex items-center justify-center gap-1.5";
+      } else {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+        regBtn.className = "w-1/2 py-3 font-semibold text-center text-white border-b-4 border-pink-500 bg-indigo-900/60 transition text-sm flex items-center justify-center gap-1.5";
+        loginBtn.className = "w-1/2 py-3 font-semibold text-center text-slate-300 hover:text-white transition text-sm flex items-center justify-center gap-1.5";
+      }
+    }
+
+    function showAlert(msg, isSuccess = false) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-emerald-100', 'text-emerald-700');
+      if (isSuccess) {
+        alertBox.classList.add('bg-emerald-100', 'text-emerald-700');
+      } else {
+        alertBox.classList.add('bg-red-100', 'text-red-700');
+      }
+      alertBox.innerText = msg;
+    }
+
+    function hideAlert() {
+      document.getElementById('alertBox').classList.add('hidden');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      hideAlert();
+      const btn = document.getElementById('btnLogin');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังตรวจสอบ...`;
+
+      const payload = {
+        action: "login",
+        room: document.getElementById('loginRoom').value,
+        studentNo: document.getElementById('loginStudentNo').value,
+        studentId: document.getElementById('loginStudentId').value,
+        password: document.getElementById('loginPassword').value
+      };
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ`;
+        if (res.success) {
+          showDashboard(res.studentInfo, res.scores);
+        } else {
+          showAlert(res.message, false);
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ`;
+        showAlert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", false);
+      });
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      hideAlert();
+      const btn = document.getElementById('btnRegister');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
+
+      const payload = {
+        action: "register",
+        room: document.getElementById('regRoom').value,
+        studentNo: document.getElementById('regStudentNo').value,
+        studentId: document.getElementById('regStudentId').value,
+        nickname: document.getElementById('regNickname').value,
+        password: document.getElementById('regPassword').value
+      };
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-check"></i> ลงทะเบียน`;
+        showAlert(res.message, res.success);
+        if (res.success) {
+          document.getElementById('registerForm').reset();
+          setTimeout(() => { switchTab('login'); }, 1500);
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-check"></i> ลงทะเบียน`;
+        showAlert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", false);
+      });
+    }
+
+    function showDashboard(student, scores) {
+      document.getElementById('authContainer').classList.add('hidden');
+      document.getElementById('scoreContainer').classList.remove('hidden');
+
+      // แสดง ชื่อ - นามสกุล และข้อมูลประจำตัวนักเรียน
+      document.getElementById('dispFullName').innerText = student.fullName || "ไม่ระบุชื่อ";
+      document.getElementById('dispNickname').innerText = student.nickname || "-";
+      document.getElementById('dispRoom').innerText = student.room || "-";
+      document.getElementById('dispStudentNo').innerText = student.studentNo || "-";
+      document.getElementById('dispStudentId').innerText = student.studentId || "-";
+
+      const tbody = document.getElementById('scoreTableBody');
+      tbody.innerHTML = "";
+
+      scores.forEach(item => {
+        const isTotal = item.title === "รวม";
+        const rawUserScore = item.userScore !== undefined && item.userScore !== null ? String(item.userScore).trim() : "";
+        const numUserScore = parseFloat(rawUserScore);
+        const numFullScore = parseFloat(item.fullScore);
+
+        let scoreHtml = "";
+
+        // 1. คะแนนรวมของนักเรียน -> ขึ้นตัวหนา ไม่ใช้เกณฑ์ครึ่งหนึ่ง
+        if (isTotal) {
+          scoreHtml = `<span class="font-extrabold text-indigo-950 text-base sm:text-lg whitespace-nowrap">${rawUserScore}</span>`;
+        }
+        // 2. สถานะ "กำลังตรวจสอบ" -> ตัวหนังสือสีเหลืองพร้อมแบคกราวด์อ่านชัด
+        else if (rawUserScore === "กำลังตรวจสอบ") {
+          scoreHtml = `
+            <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 font-bold px-2.5 py-1 rounded-md text-xs shadow-sm border border-amber-300 whitespace-nowrap">
+              <i class="fa-solid fa-clock-rotate-left text-[10px]"></i> กำลังตรวจสอบ
+            </span>`;
+        } 
+        // 3. สถานะ "ยังไม่ได้สอบ" -> ตัวหนังสือสีเทา
+        else if (rawUserScore === "ยังไม่ได้สอบ") {
+          scoreHtml = `<span class="text-slate-400 italic font-medium text-xs whitespace-nowrap">ยังไม่ได้สอบ</span>`;
+        } 
+        // 4. คะแนนปกติเทียบกับครึ่งหนึ่ง
+        else if (!isNaN(numUserScore) && !isNaN(numFullScore) && numFullScore > 0) {
+          const halfScore = numFullScore / 2;
+          if (numUserScore < halfScore) {
+            scoreHtml = `<span class="text-red-600 font-extrabold text-sm sm:text-base whitespace-nowrap"><i class="fa-solid fa-xmark text-xs mr-0.5"></i>${rawUserScore}</span>`;
+          } else {
+            scoreHtml = `<span class="text-emerald-600 font-extrabold text-sm sm:text-base whitespace-nowrap"><i class="fa-solid fa-check text-xs mr-0.5"></i>${rawUserScore}</span>`;
+          }
+        } 
+        else {
+          scoreHtml = `<span class="font-bold text-indigo-950 text-sm whitespace-nowrap">${rawUserScore}</span>`;
+        }
+
+        const rowHtml = `
+          <tr class="${isTotal ? 'bg-pink-50/90 font-bold border-t-2 border-pink-400' : 'hover:bg-slate-50 transition'}">
+            <td class="px-3.5 py-3 ${isTotal ? 'text-pink-900 font-bold' : 'text-slate-800 font-medium'} text-xs sm:text-sm whitespace-nowrap">
+              ${isTotal ? '<i class="fa-solid fa-calculator text-pink-600 mr-1"></i>' : ''}${item.title}
+            </td>
+            <td class="px-3 py-3 text-center text-indigo-950 font-extrabold text-xs sm:text-sm bg-indigo-50/40 border-x border-slate-100 whitespace-nowrap">
+              ${item.fullScore}
+            </td>
+            <td class="px-4 py-3 text-center whitespace-nowrap min-w-[130px]">
+              ${scoreHtml}
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += rowHtml;
+      });
+    }
+
+    function logout() {
+      document.getElementById('scoreContainer').classList.add('hidden');
+      document.getElementById('authContainer').classList.remove('hidden');
+      document.getElementById('loginForm').reset();
+      hideAlert();
+    }
+  </script>
+</body>
+</html>
