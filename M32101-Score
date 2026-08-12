@@ -19,25 +19,20 @@
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col justify-between text-slate-800">
 
-  <!-- Header (ไม่มีขอบ โลโก้ใหญ่ชิดซ้าย ข้อความขวาใช้สีประจำโรงเรียน ชมพู-น้ำเงิน) -->
-  <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-50">
+  <!-- Header -->
+  <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-40">
     <div class="max-w-md sm:max-w-xl mx-auto px-3 py-3.5 flex items-center gap-3.5 sm:gap-4">
-      <!-- โลโก้โรงเรียน (ใหญ่ขึ้น ชิดซ้าย) -->
       <img src="https://lh3.googleusercontent.com/d/1Z9MPVWtb-mfSfJE0OVXg4lEQK9KQWxFm" 
            alt="โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน" 
            class="h-16 w-16 sm:h-20 sm:w-20 object-contain bg-white p-1.5 rounded-2xl shadow-md shrink-0">
       
-      <!-- ข้อความด้านขวา -->
       <div class="flex-1 min-w-0">
-        <!-- ชื่อระบบ -->
         <h1 class="text-sm sm:text-base font-extrabold text-pink-400 leading-tight">
           ระบบประกาศคะแนนรายวิชา ค32101
         </h1>
-        <!-- ชื่อโรงเรียน -->
         <p class="text-xs sm:text-sm font-bold text-white leading-snug mt-0.5">
           โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน
         </p>
-        <!-- ชื่อรายวิชา -->
         <p class="text-[11px] sm:text-xs text-pink-200 font-medium mt-1 flex items-center gap-1">
           <i class="fa-solid fa-book-open text-pink-400"></i> ค32101 คณิตศาสตร์พื้นฐาน 3ก
         </p>
@@ -173,7 +168,7 @@
     <!-- Score Dashboard Container -->
     <div id="scoreContainer" class="hidden space-y-3.5">
       
-      <!-- Profile Card (แสดงชื่อ-นามสกุลชัดเจน) -->
+      <!-- Profile Card -->
       <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-5 border-t-4 border-pink-500 border-x border-b border-slate-200">
         <div class="flex items-start justify-between border-b pb-3 mb-3">
           <div class="flex items-center gap-3">
@@ -217,7 +212,6 @@
               </tr>
             </thead>
             <tbody id="scoreTableBody" class="divide-y divide-slate-100">
-              <!-- ข้อมูลคะแนนจะถูกเติมที่นี่ด้วย JavaScript -->
             </tbody>
           </table>
         </div>
@@ -227,13 +221,35 @@
 
   </main>
 
+  <!-- Modal ป๊อปอัปแจ้งเตือนกรณีเคยสมัครแล้ว -->
+  <div id="alreadyRegisteredModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-100 text-center animate-fade-in">
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl shadow-inner">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-800 mb-1">นักเรียนเคยสมัครใช้งานแล้ว!</h3>
+      <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+        พบข้อมูลในระบบแล้ว คุณต้องการเปลี่ยนข้อมูลเป็นข้อมูลที่กรอกเข้ามาใหม่ หรือใช้ข้อมูลเดิมในการเข้าสู่ระบบ?
+      </p>
+      <div class="flex flex-col gap-2">
+        <button onclick="confirmOverwrite(true)" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2.5 rounded-xl text-xs shadow transition duration-200">
+          <i class="fa-solid fa-arrows-rotate mr-1"></i> เปลี่ยนเป็นข้อมูลใหม่
+        </button>
+        <button onclick="confirmOverwrite(false)" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-xs border border-slate-300 transition duration-200">
+          <i class="fa-solid fa-key mr-1"></i> ใช้ข้อมูลเดิม (ไปหน้าเข้าสู่ระบบ)
+        </button>
+      </div>
+    </div>
+  </div>
+
   <footer class="text-center text-[11px] text-slate-500 py-3 border-t border-slate-200 bg-white">
     &copy; โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ปทุมวัน
   </footer>
 
   <script>
-    // URL Web App จาก Google Apps Script
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkS-yyc8IxOv4wVoNNdlx841T7j3lQWCZkT26Co_o5SjkxG9zAn1W-Ox82h6FTdYgXmg/exec";
+
+    let pendingRegisterData = null;
 
     function switchTab(tab) {
       hideAlert();
@@ -307,18 +323,24 @@
     function handleRegister(e) {
       e.preventDefault();
       hideAlert();
-      const btn = document.getElementById('btnRegister');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
 
-      const payload = {
+      pendingRegisterData = {
         action: "register",
         room: document.getElementById('regRoom').value,
         studentNo: document.getElementById('regStudentNo').value,
         studentId: document.getElementById('regStudentId').value,
         nickname: document.getElementById('regNickname').value,
-        password: document.getElementById('regPassword').value
+        password: document.getElementById('regPassword').value,
+        overwrite: false
       };
+
+      sendRegisterRequest(pendingRegisterData);
+    }
+
+    function sendRegisterRequest(payload) {
+      const btn = document.getElementById('btnRegister');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังดำเนินการ...`;
 
       fetch(WEB_APP_URL, {
         method: "POST",
@@ -328,10 +350,16 @@
       .then(res => {
         btn.disabled = false;
         btn.innerHTML = `<i class="fa-solid fa-check"></i> ลงทะเบียน`;
-        showAlert(res.message, res.success);
-        if (res.success) {
+
+        if (res.alreadyRegistered) {
+          // เคยลงทะเบียนแล้ว -> แสดง Pop-up ตัวเลือก
+          document.getElementById('alreadyRegisteredModal').classList.remove('hidden');
+        } else if (res.success) {
+          showAlert(res.message, true);
           document.getElementById('registerForm').reset();
           setTimeout(() => { switchTab('login'); }, 1500);
+        } else {
+          showAlert(res.message, false);
         }
       })
       .catch(err => {
@@ -341,11 +369,28 @@
       });
     }
 
+    function confirmOverwrite(shouldOverwrite) {
+      document.getElementById('alreadyRegisteredModal').classList.add('hidden');
+      if (shouldOverwrite && pendingRegisterData) {
+        // ยืนยันเปลี่ยนเป็นข้อมูลใหม่
+        pendingRegisterData.overwrite = true;
+        sendRegisterRequest(pendingRegisterData);
+      } else {
+        // เลือกใช้ข้อมูลเดิม -> นำข้อมูลห้อง/เลขที่ ไปเติมช่อง Login เพื่ออำนวยความสะดวก
+        if (pendingRegisterData) {
+          document.getElementById('loginRoom').value = pendingRegisterData.room;
+          document.getElementById('loginStudentNo').value = pendingRegisterData.studentNo;
+          document.getElementById('loginStudentId').value = pendingRegisterData.studentId;
+        }
+        switchTab('login');
+        showAlert("ใช้ข้อมูลเดิมเรียบร้อยแล้ว กรุณากรอกรหัสผ่านเดิมเพื่อเข้าสู่ระบบ", true);
+      }
+    }
+
     function showDashboard(student, scores) {
       document.getElementById('authContainer').classList.add('hidden');
       document.getElementById('scoreContainer').classList.remove('hidden');
 
-      // แสดง ชื่อ - นามสกุล และข้อมูลประจำตัวนักเรียน
       document.getElementById('dispFullName').innerText = student.fullName || "ไม่ระบุชื่อ";
       document.getElementById('dispNickname').innerText = student.nickname || "-";
       document.getElementById('dispRoom').innerText = student.room || "-";
@@ -363,22 +408,18 @@
 
         let scoreHtml = "";
 
-        // 1. คะแนนรวมของนักเรียน -> ขึ้นตัวหนา ไม่ใช้เกณฑ์ครึ่งหนึ่ง
         if (isTotal) {
           scoreHtml = `<span class="font-extrabold text-indigo-950 text-base sm:text-lg whitespace-nowrap">${rawUserScore}</span>`;
         }
-        // 2. สถานะ "กำลังตรวจสอบ" -> ตัวหนังสือสีเหลืองพร้อมแบคกราวด์อ่านชัด
         else if (rawUserScore === "กำลังตรวจสอบ") {
           scoreHtml = `
             <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 font-bold px-2.5 py-1 rounded-md text-xs shadow-sm border border-amber-300 whitespace-nowrap">
               <i class="fa-solid fa-clock-rotate-left text-[10px]"></i> กำลังตรวจสอบ
             </span>`;
         } 
-        // 3. สถานะ "ยังไม่ได้สอบ" -> ตัวหนังสือสีเทา
         else if (rawUserScore === "ยังไม่ได้สอบ") {
           scoreHtml = `<span class="text-slate-400 italic font-medium text-xs whitespace-nowrap">ยังไม่ได้สอบ</span>`;
         } 
-        // 4. คะแนนปกติเทียบกับครึ่งหนึ่ง
         else if (!isNaN(numUserScore) && !isNaN(numFullScore) && numFullScore > 0) {
           const halfScore = numFullScore / 2;
           if (numUserScore < halfScore) {
